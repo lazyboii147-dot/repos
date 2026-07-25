@@ -1,0 +1,12 @@
+framework: Tzitzimimeh Monolith
+tier: RED-COMPLIANCE
+engine:
+  target_regex_patterns:
+    telemetry_domains: "^https?:\/\/([a-zA-Z0-9-]+\\.)*(analytics|metrics|telemetry|stats|collector|siteintercept|digital-cloud)\\.[a-zA-Z]{2,}\/.*$"
+    source_map_assets: "^.*\\.js\\.map$"
+    protected_clientlibs: "^\\/etc\\.clientlibs\\/.*$"
+    session_tokens: "^(md_ex_AuthorizationToken|fs_uid|_abck|bm_[sz]|QSI_.*_intercept)$"
+  active_modules:
+    - WILDLIFE_HUNT_TELEMETRY_RED
+    - tzitzimimeh_regex_engine
+  neutralization_mode: adaptive-escalation

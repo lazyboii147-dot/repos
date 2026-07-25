@@ -1,0 +1,7 @@
+{
+  "sessionId": "POISONED_SESSION_ID_XYZ",
+  "correlationUUID": "MALFORMED_METADATA_VECTOR",
+  "invitePresentedCount": 99999,
+  "telemetryStatus": "poisoned",
+  "source": "Tzitzimimeh-Automation-Engine"
+}

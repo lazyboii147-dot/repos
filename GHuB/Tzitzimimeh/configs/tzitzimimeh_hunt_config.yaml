@@ -1,0 +1,17 @@
+framework: Tzitzimimeh Monolith
+tier: RED-COMPLIANCE
+engine:
+  target_domains:
+    - marriott.com
+    - digital-cloud.medallia.com
+    - siteintercept.qualtrics.com
+  active_modules:
+    - WILDLIFE_HUNT_TELEMETRY_RED
+    - medalla_source_map_auditor
+    - qualtrics_core_auditor
+    - aries_component_mapper_auditor
+  behavioral_vectors:
+    - predator-shadow-tracking
+    - anomaly-stalk-loop
+    - stillness-feign-protocol
+  neutralization_mode: adaptive-escalation

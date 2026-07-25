@@ -1,0 +1,16 @@
+{
+  "\": "http://json-schema.org/draft-07/schema#",
+  "title": "TzitzimimehTelemetryProfile",
+  "type": "object",
+  "properties": {
+    "module": { "type": "string" },
+    "tier": { "type": "string", "enum": ["STANDARD", "RED", "RED-COMPLIANCE"] },
+    "flay_binding": { "type": "string" },
+    "behaviors": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "neutralization": { "type": "string" }
+  },
+  "required": ["module", "tier", "flay_binding", "behaviors"]
+}

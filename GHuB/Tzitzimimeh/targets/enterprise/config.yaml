@@ -1,0 +1,9 @@
+target_name: "enterprise-target"
+base_url: "https://www.target.com"
+components:
+  hdvars_endpoint: "/aries-common/v1/hdVars.comp"
+  session_cleanup_endpoint: "/aries-common/v1/sessionCleanup.comp"
+  timeout_submit_endpoint: "/aries-auth/sessionTimeOutSubmit.comp"
+workbox_cache_rules:
+  - "js-cache"
+  - "css-cache"
