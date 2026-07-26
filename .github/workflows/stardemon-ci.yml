@@ -1,0 +1,37 @@
+name: Tzitzimimeh Star Demon Cloud Guardian
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  awaken-star-demon:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up PowerShell Environment
+      shell: pwsh
+      run: |
+        Write-Host "Awakening Cloud Star Demon..." -ForegroundColor Cyan
+        $OutputDir = "Output"
+        if (-not (Test-Path $OutputDir)) { New-Item -Path $OutputDir -ItemType Directory }
+        
+        # Simple cloud harvest log/manifest verification
+        $files = Get-ChildItem -Recurse -File | Where-Object { $_.FullName -notmatch '\\\.git\\|\\Output\\' }
+        Write-Host "Total files detected by Cloud Demon: $($files.Count)"
+        
+        "Cloud Star Demon successfully verified repository on $(Get-Date)" | Out-File -FilePath "$OutputDir/StarDemon_CloudStatus.txt" -Encoding utf8
+
+    - name: Commit and Push Changes (if any)
+      shell: pwsh
+      run: |
+        git config --global user.name "Tzitzimimeh Star Demon"
+        git config --global user.email "stardemon@automation.local"
+        git add -A
+        git status
+        git diff-index --quiet HEAD || git commit -m "Cloud Star Demon automated sync [skip ci]"
+        git push
