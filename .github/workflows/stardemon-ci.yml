@@ -5,6 +5,9 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   awaken-star-demon:
     runs-on: windows-latest
@@ -13,25 +16,61 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Set up PowerShell Environment
+    - name: Execute Star Demon Cloud Harvester
       shell: pwsh
       run: |
-        Write-Host "Awakening Cloud Star Demon..." -ForegroundColor Cyan
-        $OutputDir = "Output"
-        if (-not (Test-Path $OutputDir)) { New-Item -Path $OutputDir -ItemType Directory }
-        
-        # Simple cloud harvest log/manifest verification
-        $files = Get-ChildItem -Recurse -File | Where-Object { $_.FullName -notmatch '\\\.git\\|\\Output\\' }
-        Write-Host "Total files detected by Cloud Demon: $($files.Count)"
-        
-        "Cloud Star Demon successfully verified repository on $(Get-Date)" | Out-File -FilePath "$OutputDir/StarDemon_CloudStatus.txt" -Encoding utf8
+        Write-Host "Awakening Cloud Star Demon Engine..." -ForegroundColor Cyan
+        $ScriptRoot = $PWD.Path
+        $OutputDir = Join-Path $ScriptRoot "Output"
+        $OutputFile = Join-Path $OutputDir "StarDemon_MasterBundle.txt"
 
-    - name: Commit and Push Changes (if any)
+        if (-not (Test-Path -Path $OutputDir)) {
+            New-Item -Path $OutputDir -ItemType Directory -Force | Out-Null
+        }
+
+        # Exclude system/build directories and the bundle itself
+        $excludedDirs = @(".git", "bin", "obj", "Output", ".vs", "node_modules")
+        $allFiles = Get-ChildItem -Path $ScriptRoot -Recurse -File | Where-Object {
+            $file = $_
+            $inExcludedDir = $false
+            foreach ($dir in $excludedDirs) {
+                if ($file.FullName -like "*\$dir\*") { $inExcludedDir = $true; break }
+            }
+            -not $inExcludedDir -and $_.Name -ne "StarDemon_MasterBundle.txt"
+        }
+
+        Write-Host "Devouring $($allFiles.Count) files in the cloud..." -ForegroundColor Green
+        $mergedContent = [System.Text.StringBuilder]::new()
+        [void]$mergedContent.AppendLine("==================================================")
+        [void]$mergedContent.AppendLine(" TZITZIMIMEH STAR DEMON - CLOUD MASTER BUNDLE")
+        [void]$mergedContent.AppendLine(" Harvested on: $(Get-Date)")
+        [void]$mergedContent.AppendLine(" Total Files Consumed: $($allFiles.Count)")
+        [void]$mergedContent.AppendLine("==================================================")
+        [void]$mergedContent.AppendLine()
+
+        foreach ($file in $allFiles) {
+            $relativePath = $file.FullName.Substring($ScriptRoot.Length).TrimStart('\', '/')
+            [void]$mergedContent.AppendLine("--------------------------------------------------")
+            [void]$mergedContent.AppendLine(" FILE PATH: $relativePath")
+            [void]$mergedContent.AppendLine("--------------------------------------------------")
+            [void]$mergedContent.AppendLine()
+            try {
+                $content = Get-Content -Path $file.FullName -Raw -ErrorAction SilentlyContinue
+                [void]$mergedContent.AppendLine($content)
+            } catch {
+                [void]$mergedContent.AppendLine("[Binary or locked file content omitted]")
+            }
+            [void]$mergedContent.AppendLine()
+        }
+
+        $mergedContent.ToString() | Out-File -FilePath $OutputFile -Encoding utf8
+        Write-Host "Cloud Master Bundle successfully forged at: $OutputFile" -ForegroundColor Green
+
+    - name: Commit and Push Changes
       shell: pwsh
       run: |
-        git config --global user.name "Tzitzimimeh Star Demon"
-        git config --global user.email "stardemon@automation.local"
+        git config --local user.name "Tzitzimimeh Star Demon [Cloud]"
+        git config --local user.email "stardemon-cloud@automation.local"
         git add -A
         git status
-        git diff-index --quiet HEAD || git commit -m "Cloud Star Demon automated sync [skip ci]"
-        git push
+        git diff-index --quiet HEAD || (git commit -m "Star Demon cloud automated harvest & sync [skip ci]" && git push)
